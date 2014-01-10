@@ -1,0 +1,71 @@
+# tag: reviews-count
+PREFIX dc:    <http://purl.org/dc/terms/>
+PREFIX rev:   <http://purl.org/stuff/rev#>
+
+SELECT COUNT(DISTINCT ?review)
+FROM <http://data.deichman.no/reviews>
+WHERE
+  {
+    ?review a rev:Review ;
+            dc:issued ?published
+  }
+
+# tag: reviews-all
+PREFIX dc:    <http://purl.org/dc/terms/>
+PREFIX rev:   <http://purl.org/stuff/rev#>
+
+SELECT DISTINCT ?review
+FROM <http://data.deichman.no/reviews>
+WHERE
+  {
+    ?review a rev:Review ;
+            dc:issued ?published
+  }
+
+# tag: review
+PREFIX dc:    <http://purl.org/dc/terms/>
+PREFIX rev:   <http://purl.org/stuff/rev#>
+PREFIX fabio: <http://purl.org/spar/fabio/>
+PREFIX foaf:  <http://xmlns.com/foaf/0.1/>
+
+SELECT DISTINCT ?review, ?title, ?text, ?teaser, ?issued, SAMPLE(?image) AS ?image,
+                ?editionTitle, ?editionSubTitle, ?work, ?workTitle, ?creator, ?creatorName,
+                ?reviewer, ?reviewerName, ?source, ?sourceName
+
+FROM <http://data.deichman.no/reviews>
+FROM NAMED <http://data.deichman.no/books>
+FROM NAMED <http://data.deichman.no/sources>
+
+WHERE
+  {
+    ?review a rev:Review ;
+            dc:issued ?issued ;
+            rev:title ?title ;
+            rev:reviewer ?reviewer .
+    OPTIONAL { ?review rev:text ?text }
+    OPTIONAL { ?review dc:abstract ?teaser }
+    GRAPH <http://data.deichman.no/sources>
+      {
+        ?reviewer foaf:name ?reviewerName ;
+                  foaf:account _:a1 .
+        _:a1 foaf:accountServiceHomepage ?source .
+        ?source foaf:name ?sourceName .
+      }
+    GRAPH <http://data.deichman.no/books>
+      {
+        ?work rev:hasReview ?review ;
+              a fabio:Work ;
+              dc:title ?workTitle .
+        _:e1 rev:hasReview ?review ;
+             a fabio:Manifestation ;
+             dc:title ?editionTitle .
+        OPTIONAL { _:e1 fabio:hasSubtitle ?editionSubTitle }
+        OPTIONAL { _:e1 foaf:depiction ?image }
+        OPTIONAL
+          {
+            ?work dc:creator ?creator .
+            ?creator foaf:name ?creatorName .
+          }
+      }
+    FILTER (?review = <{{uri}}>)
+  }
