@@ -5,7 +5,7 @@
 
 (defn- query-work [q] {:multi_match {:query q :fields ["title^10", "original-title", "subtitle"]}})
 (defn- query-author [q] {:term {:name q}})
-(defn- query-review [q] {:multi_match {:query q :fields ["title", "text^2", "teaser"]}})
+(defn- query-review [q] {:multi_match {:query q :fields ["text^2", "teaser"]}})
 (defn- query-reviewer [q] {:multi_match {:query q :fields ["reviewer.name^10", "reviewer.source.name"]}})
 
 (defn work [q]
@@ -30,9 +30,10 @@
         queries [{:index "reviews" :type "work"}
                  {:query (query-work q) :size num-hits}
                  {:index "reviews" :type "author"}
-                 {:query (query-author q) :size num-hits}
+                 {:query (query-author q) :size 5}
                  {:index "reviews" :type "review"}
-                 {:query (query-review q) :size num-hits}
+                 {:query (query-review q) :size num-hits
+                  :highlight {:fields {:text {:fragment_size 200} :teaser {:fragment_size 100}}}}
                  {:index "reviews" :type "reviewer"}
-                 {:query (query-reviewer q) :size num-hits}]]
+                 {:query (query-reviewer q) :size 5}]]
     (multi/search queries)))

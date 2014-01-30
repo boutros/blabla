@@ -21,6 +21,15 @@
               "standard",
               "lowercase"
             ]
+          },
+          "norwegian_index_analyzer": {
+            "type": "custom",
+            "tokenizer": "standard",
+            "filter": [
+              "standard",
+              "lowercase",
+              "nor_stemmer"
+            ]
           }
         },
         "filter": {
@@ -33,6 +42,10 @@
             "type": "nGram",
             "min_gram": 1,
             "max_gram": 20
+          },
+          "nor_stemmer": {
+            "type": "stemmer",
+            "name": "norwegian"
           }
         }
       }
@@ -135,7 +148,9 @@
         },
         "text": {
           "type": "string",
-          "index": "analyzed"
+          "index": "analyzed",
+          "analyzer": "norwegian_index_analyzer",
+          "index_options": "offsets"
         },
         "issued": {
           "type": "string",
