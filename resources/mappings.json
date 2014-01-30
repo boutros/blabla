@@ -148,10 +148,14 @@
         },
         "text": {
           "type": "string",
+          "index": "not_analyzed"
+        },
+        "text-stripped": {
+          "type": "string",
           "index": "analyzed",
           "analyzer": "norwegian_index_analyzer",
           "index_options": "offsets"
-        },
+          },
         "issued": {
           "type": "string",
           "index": "not_analyzed"

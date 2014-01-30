@@ -68,8 +68,9 @@
           (dom/ul #js {:className "authors"}
            (om/build-all author-link (-> hit :work :author))))
         (dom/td #js{:className "work-title"} (-> hit :work :title))
-        (dom/td #js {:className "smaller"} (or (-> data :highlight :text first)
-                                               (-> data :highlight :teaser first)))))))
+        (dom/td #js {:className "smaller"
+                     :dangerouslySetInnerHTML #js{:__html (or (-> data :highlight :text-stripped first)
+                                                              (-> data :highlight :teaser first))}})))))
 
 (defn hit-by-work [data owner]
   (om/component
@@ -125,10 +126,9 @@
                     (dom/h2 #js {:onClick #(set-select 1 owner)} (str (-> author-hits :hits :total) " treff i forfatter"))
                     (when (> (-> author-hits :hits :total) 0)
                       (dom/span #js {:className "expand"} "▼"))
-                    (dom/div #js {:className (if (= selected 1) "" "hidden")}
-                      (om/build-all hit-by-author (-> author-hits :hits :hits) {:key :_id})
-                      (when (> (-> author-hits :hits :total) 0)
-                        (dom/br nil))))
+                    (om/build-all hit-by-author (-> author-hits :hits :hits) {:key :_id})
+                    (when (> (-> author-hits :hits :total) 0)
+                      (dom/br nil)))
                   (dom/div #js {:className "result-group"}
                     (dom/h2 nil (str (-> review-hits :hits :total) " treff i anbefalingstekst"))
                     (when (> (-> review-hits :hits :total) 0)

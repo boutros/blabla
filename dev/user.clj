@@ -8,7 +8,8 @@
             [clojurewerkz.elastisch.rest.index :as esi]
             [clojurewerkz.elastisch.rest.document :as esd]
             [clojurewerkz.elastisch.rest.bulk :as bulk]
-            [clojure.tools.namespace.repl :refer [refresh-all]]))
+            [clojure.tools.namespace.repl :refer [refresh-all]])
+  (:import [org.jsoup Jsoup]))
 
 
 (def query (query-bank "sparql/qbank.sparql"))
@@ -88,11 +89,13 @@
               :author author
               :original-title (->> b :workTitle first)
               :title (->> b :editionTitle first)
-              :subtitle (->> b :editionSubTitle first)}]
+              :subtitle (->> b :editionSubTitle first)}
+        text (->> b :text first)]
     {:_id uri
      :title (->> b :title first)
      :teaser (->> b :teaser first)
-     :text (->> b :text first)
+     :text text
+     :text-stripped (when text (->> text Jsoup/parse .text))
      :issued (->> b :issued first)
      :image (->> b :image first)
      :reviewer reviewer
@@ -112,3 +115,5 @@
     (try
       (index-review! r)
       (catch Exception e (println (str r "\n" (.getMessage e)))))))
+
+(esr/connect! "http://127.0.0.1:9200")
