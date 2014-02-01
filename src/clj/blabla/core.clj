@@ -11,16 +11,16 @@
 
 (defn edn-response [b]
   {:status 200
-   :headers {"Content-Type" "application/edn"}
+   :headers {"Content-Type" "application/edn; charset=utf-8"}
    :body (pr-str b)})
 
 (esr/connect! "http://127.0.0.1:9200")
 
 (defroutes routes
   (GET "/" [] (main-page))
-  (POST "/work" [q] (edn-response (query/work q)))
-  (POST "/author" [q] (edn-response (query/author q)))
-  (POST "/review" [q] (edn-response (query/review q)))
-  (POST "/reviewer" [q] (edn-response (query/reviewer q)))
+  ; (POST "/work" [q] (edn-response (query/work q)))
+  ; (POST "/author" [q] (edn-response (query/author q)))
+  ; (POST "/review" [q] (edn-response (query/review q)))
+  ; (POST "/reviewer" [q] (edn-response (query/reviewer q)))
   (POST "/all" [q] (edn-response (query/all q)))
   (route/not-found "Gå vekk!"))

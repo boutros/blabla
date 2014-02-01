@@ -3,37 +3,35 @@
             [clojurewerkz.elastisch.rest.document :as esd]
             [clojurewerkz.elastisch.rest.multi :as multi]))
 
-(defn- query-work [q] {:multi_match {:query q :fields ["title^10", "original-title", "subtitle"]}})
-(defn- query-author [q] {:term {:name q}})
-(defn- query-review [q] {:multi_match {:query q :fields ["text^2", "teaser"]}})
-(defn- query-reviewer [q] {:multi_match {:query q :fields ["reviewer.name^10", "reviewer.source.name"]}})
+(defn- query-books [q] {:multi_match {:query q :fields ["title^10", "original-title", "subtitle", "author.name^10"]}})
+;(defn- query-reviews [q] {:term {:name q}})
+(defn- query-reviews [q] {:multi_match {:query q :fields ["text^10", "teaser"]}})
+; (defn- query-reviewer [q] {:multi_match {:query q :fields ["reviewer.name^10", "reviewer.source.name"]}})
 
-(defn work [q]
-  "searches in book title (incl. orig title & subtitle)"
-  (esd/search "reviews" "work" :query (query-work q)))
+; (defn book [q]
+;   "searches in book title (incl. orig title & subtitle)"
+;   (esd/search "reviews" "work" :query (query-work q)))
 
-(defn author [q]
-  "searches in author name"
-  (esd/search "reviews" "author" :query (query-author q)))
+; (defn author [q]
+;   "searches in author name"
+;   (esd/search "reviews" "author" :query (query-author q)))
 
-(defn review [q]
-  "searches in review title, text and teaser"
-  (esd/search "reviews" "review" :query (query-review q)))
+; (defn review [q]
+;   "searches in review title, text and teaser"
+;   (esd/search "reviews" "review" :query (query-review q)))
 
-(defn reviewer [q]
-  "searches for reviewer name and source name"
-  (esd/search "reviews" "reviewer" :query (query-reviewer q)))
+; (defn reviewer [q]
+;   "searches for reviewer name and source name"
+;   (esd/search "reviews" "reviewer" :query (query-reviewer q)))
 
 (defn all [q]
-  "multi-search; return 3 results from all searches"
-  (let [num-hits 3
+  "multi-search; return results from 2 searches"
+  (let [num-hits 5
         queries [{:index "reviews" :type "work"}
-                 {:query (query-work q) :size num-hits}
-                 {:index "reviews" :type "author"}
-                 {:query (query-author q) :size 5}
+                 {:query (query-books q) :size num-hits}
                  {:index "reviews" :type "review"}
-                 {:query (query-review q) :size num-hits
-                  :highlight {:fields {:text {:fragment_size 200} :teaser {:fragment_size 100}}}}
-                 {:index "reviews" :type "reviewer"}
-                 {:query (query-reviewer q) :size 5}]]
+                 {:query (query-reviews q) :size num-hits
+                  :highlight {:fields {:text {:fragment_size 200} :teaser {:fragment_size 100}}}}]]
     (multi/search queries)))
+
+;(esr/connect! "http://127.0.0.1:9200")
