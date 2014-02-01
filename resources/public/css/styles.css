@@ -56,8 +56,8 @@ table.hit-list { font-size:14px; width: 100%;}
 .authors { list-style-type: none; padding:0; margin:0;}
 .authors li { font-size: 100%; display:block; float:left; width: 200px; vertical-align: top; text-align: left;}
 .author { float:left;}
-.linki { background: #eef; text-decoration: underline; cursor: pointer; color: navy; margin-right:1em;}
-.linko { background: #eef; color: #444; }
+.linki { background: #eef; text-decoration: underline; cursor: pointer; color: blue; margin-right:1em;}
+.linko { background: #eef; color: navy;}
 
 .smaller { font-size: 90%;}
 .orig-title { display: inline-block; margin-left:0.5em; color: #444;}

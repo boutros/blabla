@@ -34,4 +34,4 @@
                   :highlight {:fields {:text {:fragment_size 200} :teaser {:fragment_size 100}}}}]]
     (multi/search queries)))
 
-;(esr/connect! "http://127.0.0.1:9200")
+(esr/connect! "http://127.0.0.1:9200")
