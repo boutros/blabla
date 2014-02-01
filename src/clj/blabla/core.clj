@@ -22,5 +22,5 @@
   ; (POST "/author" [q] (edn-response (query/author q)))
   ; (POST "/review" [q] (edn-response (query/review q)))
   ; (POST "/reviewer" [q] (edn-response (query/reviewer q)))
-  (POST "/all" [q] (edn-response (query/all q)))
+  (POST "/all" [q work-offset review-offset] (edn-response (query/all q work-offset review-offset)))
   (route/not-found "Gå vekk!"))

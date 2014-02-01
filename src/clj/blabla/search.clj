@@ -24,13 +24,13 @@
 ;   "searches for reviewer name and source name"
 ;   (esd/search "reviews" "reviewer" :query (query-reviewer q)))
 
-(defn all [q]
+(defn all [q work-offset review-offset]
   "multi-search; return results from 2 searches"
   (let [num-hits 5
         queries [{:index "reviews" :type "work"}
-                 {:query (query-books q) :size num-hits}
+                 {:query (query-books q) :size num-hits :from work-offset}
                  {:index "reviews" :type "review"}
-                 {:query (query-reviews q) :size num-hits
+                 {:query (query-reviews q) :size num-hits :from review-offset
                   :highlight {:fields {:text {:fragment_size 200} :teaser {:fragment_size 100}}}}]]
     (multi/search queries)))
 
